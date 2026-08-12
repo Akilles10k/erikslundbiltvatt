@@ -52,7 +52,7 @@ export default function HomeSeoSection() {
               Biltvätt och bilrekond i Erikslund
             </h2>
             <p className="home-info-lead">
-              Glansig Biltvätt erbjuder professionell biltvätt, handtvätt och bilrekond –
+              Glansig Bilvård erbjuder professionell biltvätt, handtvätt och bilrekond –
               från snabb utvändig tvätt till fullständig rekonditionering med lackskydd
               och polering.
             </p>

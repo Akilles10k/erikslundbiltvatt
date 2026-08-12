@@ -22,14 +22,14 @@ export const SEO_KEYWORDS = [
   "polering bil",
   "bilrekonditionering",
   "professionell biltvätt",
-  "Glansig Biltvätt",
+  "Glansig Bilvård",
 ] as const;
 
 export const DEFAULT_TITLE =
-  "Biltvätt & Bilrekond Erikslund | Handtvätt & Rekond – Glansig Biltvätt";
+  "Biltvätt & Bilrekond Erikslund | Handtvätt & Rekond – Glansig Bilvård";
 
 export const DEFAULT_DESCRIPTION =
-  "Glansig Biltvätt erbjuder professionell biltvätt, handtvätt och bilrekond i Erikslund. Boka tid online – invändig & utvändig tvätt, lackskydd, polering och bilvård.";
+  "Glansig Bilvård erbjuder professionell biltvätt, handtvätt och bilrekond i Erikslund. Boka tid online – invändig & utvändig tvätt, lackskydd, polering och bilvård.";
 
 type PageMetaOptions = {
   title: string;
@@ -85,7 +85,7 @@ export function createPageMetadata({
           url: absoluteUrl("/hero-car.png"),
           width: 900,
           height: 500,
-          alt: "Professionell biltvätt och bilrekond i Erikslund – Glansig Biltvätt",
+          alt: "Professionell biltvätt och bilrekond i Erikslund – Glansig Bilvård",
         },
       ],
     },
@@ -100,7 +100,7 @@ export function createPageMetadata({
 
 export const FAQ_ITEMS = [
   {
-    question: "Vad kostar biltvätt i Erikslund hos Glansig Biltvätt?",
+    question: "Vad kostar biltvätt i Erikslund hos Glansig Bilvård?",
     answer:
       "Handtvätt utvändigt och invändigt startar från 300 kr. Komplett in- och utvändig tvätt från 499 kr. Se hela prislistan under Tjänster & priser för bilrekond, lackskydd, polering och tilläggstjänster.",
   },
@@ -115,7 +115,7 @@ export const FAQ_ITEMS = [
       `Välj tjänster på vår prislista, lägg till i kundvagnen och boka tid direkt online. Du kan också ringa oss på ${SITE.phone} eller maila ${SITE.email}.`,
   },
   {
-    question: "Var ligger Glansig Biltvätt?",
+    question: "Var ligger Glansig Bilvård?",
     answer:
       `Vi finns på ${SITE.address.full}. Lätt att hitta med bil – välkommen för biltvätt och bilvård.`,
   },

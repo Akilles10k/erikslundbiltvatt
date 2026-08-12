@@ -6,7 +6,7 @@ import { createPageMetadata, getBreadcrumbJsonLd, getServicesItemListJsonLd } fr
 export const metadata: Metadata = createPageMetadata({
   title: "Biltvätt & Bilrekond – Priser",
   description:
-    "Prislista för biltvätt, handtvätt och bilrekond i Erikslund. Se priser på utvändig tvätt, invändig tvätt, rekond, lackskydd, polering och bilvård hos Glansig Biltvätt.",
+    "Prislista för biltvätt, handtvätt och bilrekond i Erikslund. Se priser på utvändig tvätt, invändig tvätt, rekond, lackskydd, polering och bilvård hos Glansig Bilvård.",
   path: "/tjanster",
   keywords: [
     "biltvätt pris",

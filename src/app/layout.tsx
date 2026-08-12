@@ -62,7 +62,7 @@ export const metadata: Metadata = {
         url: "/hero-car.png",
         width: 900,
         height: 500,
-        alt: "Biltvätt och bilrekond i Erikslund – Glansig Biltvätt",
+        alt: "Biltvätt och bilrekond i Erikslund – Glansig Bilvård",
       },
     ],
   },

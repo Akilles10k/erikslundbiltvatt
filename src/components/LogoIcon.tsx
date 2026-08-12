@@ -9,7 +9,7 @@ export default function LogoIcon({ className = "site-logo", size = 44 }: LogoIco
   return (
     <Image
       src="/logo.png"
-      alt="Glansig Biltvätt – biltvätt och bilrekond"
+      alt="Glansig Bilvård – biltvätt och bilrekond"
       width={size}
       height={size}
       className={className}

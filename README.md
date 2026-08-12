@@ -1,6 +1,6 @@
-# Glansig Biltvätt
+# Glansig Bilvård
 
-Webbplats för Glansig Biltvätt – biltvätt & bilrekond i Erikslund.
+Webbplats för Glansig Bilvård – biltvätt & bilrekond i Erikslund.
 
 ## Lokal utveckling
 

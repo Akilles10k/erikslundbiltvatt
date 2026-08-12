@@ -36,7 +36,7 @@ export default function WhySection() {
   return (
     <section className="why">
       <div className="why-inner">
-        <h2 className="why-heading">Varför välja Glansig Biltvätt för biltvätt i Erikslund?</h2>
+        <h2 className="why-heading">Varför ska du välja Glansig Bilvård i Erikslund?</h2>
         <div className="why-grid">
           {features.map((feature) => (
             <article key={feature.title} className="why-card">

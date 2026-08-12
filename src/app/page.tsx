@@ -14,7 +14,7 @@ import {
 export const metadata: Metadata = createPageMetadata({
   title: "Biltvätt & Bilrekond Erikslund",
   description:
-    "Professionell biltvätt, handtvätt och bilrekond i Erikslund. Boka tid online hos Glansig Biltvätt – invändig & utvändig tvätt, lackskydd, polering och bilvård.",
+    "Professionell biltvätt, handtvätt och bilrekond i Erikslund. Boka tid online hos Glansig Bilvård – invändig & utvändig tvätt, lackskydd, polering och bilvård.",
   path: "/",
   keywords: [
     "biltvätt Erikslund",
@@ -33,7 +33,7 @@ export default function HomePage() {
           getBreadcrumbJsonLd([{ name: "Hem", path: "/" }]),
         ]}
       />
-      <section className="hero" aria-label="Glansig Biltvätt – biltvätt och bilrekond i Erikslund">
+      <section className="hero" aria-label="Glansig Bilvård – biltvätt och bilrekond i Erikslund">
         <svg
           className="hero-watermark"
           viewBox="0 -80 1400 360"
@@ -56,7 +56,7 @@ export default function HomePage() {
         <div className="hero-content">
           <div className="hero-eyebrow">
             <span className="hero-eyebrow-line" aria-hidden />
-            <span className="hero-eyebrow-label">Glansig Biltvätt · Erikslund</span>
+            <span className="hero-eyebrow-label">Glansig Bilvård · Erikslund</span>
           </div>
           <h1 className="hero-title">
             <span className="hero-title-main">Biltvätt</span>
@@ -77,7 +77,7 @@ export default function HomePage() {
         <div className="hero-car-mobile" aria-hidden>
           <Image
             src="/hero-car.png"
-            alt="Professionell biltvätt och bilrekond i Erikslund hos Glansig Biltvätt"
+            alt="Professionell biltvätt och bilrekond i Erikslund hos Glansig Bilvård"
             width={900}
             height={500}
             className="hero-car-mobile-img"
