@@ -14,7 +14,8 @@ const links = [
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
+  const [openPathname, setOpenPathname] = useState<string | null>(null);
+  const open = openPathname === pathname;
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -26,16 +27,15 @@ export default function Navbar() {
     };
   }, [open]);
 
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
+  const closeMenu = () => setOpenPathname(null);
+  const toggleMenu = () => setOpenPathname(open ? null : pathname);
 
   return (
     <header className="navbar-header">
       <div className="navbar-accent" aria-hidden />
       <div className="navbar-shell">
         <div className="navbar">
-          <Link href="/" className="navbar-logo" onClick={() => setOpen(false)}>
+          <Link href="/" className="navbar-logo" onClick={closeMenu}>
             <LogoIcon size={44} />
             <span className="navbar-logo-text">
               <span className="navbar-logo-name">{SITE.name}</span>
@@ -80,7 +80,7 @@ export default function Navbar() {
             <button
               type="button"
               className="navbar-menu-btn"
-              onClick={() => setOpen(!open)}
+              onClick={toggleMenu}
               aria-label={open ? "Stäng meny" : "Öppna meny"}
               aria-expanded={open}
             >
@@ -105,7 +105,7 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              onClick={() => setOpen(false)}
+              onClick={closeMenu}
               className={`navbar-overlay-link ${isActive(link.href) ? "active" : ""}`}
             >
               {link.label}

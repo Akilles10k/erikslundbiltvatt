@@ -4,9 +4,8 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useState,
+  useSyncExternalStore,
 } from "react";
 import type { Service } from "@/data/site";
 
@@ -27,12 +26,25 @@ type CartContextValue = {
 const CartContext = createContext<CartContextValue | null>(null);
 
 const STORAGE_KEY = "glansbilvatt-cart";
+const STORAGE_EVENT = "glansbilvatt-cart-change";
 
-function loadCart(): CartItem[] {
-  if (typeof window === "undefined") return [];
+function getCartSnapshot() {
+  if (typeof window === "undefined") return "[]";
+  return localStorage.getItem(STORAGE_KEY) ?? "[]";
+}
+
+function subscribeToCart(listener: () => void) {
+  if (typeof window === "undefined") return () => {};
+  window.addEventListener("storage", listener);
+  window.addEventListener(STORAGE_EVENT, listener);
+  return () => {
+    window.removeEventListener("storage", listener);
+    window.removeEventListener(STORAGE_EVENT, listener);
+  };
+}
+
+function parseCart(raw: string): CartItem[] {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
     const parsed = JSON.parse(raw) as CartItem[];
     return Array.isArray(parsed) ? parsed : [];
   } catch {
@@ -41,18 +53,18 @@ function loadCart(): CartItem[] {
 }
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
-  const [hydrated, setHydrated] = useState(false);
+  const cartSnapshot = useSyncExternalStore(
+    subscribeToCart,
+    getCartSnapshot,
+    () => "[]"
+  );
+  const items = useMemo(() => parseCart(cartSnapshot), [cartSnapshot]);
 
-  useEffect(() => {
-    setItems(loadCart());
-    setHydrated(true);
+  const setItems = useCallback((updater: (prev: CartItem[]) => CartItem[]) => {
+    const nextItems = updater(parseCart(getCartSnapshot()));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(nextItems));
+    window.dispatchEvent(new Event(STORAGE_EVENT));
   }, []);
-
-  useEffect(() => {
-    if (!hydrated) return;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-  }, [items, hydrated]);
 
   const addToCart = useCallback((service: Service) => {
     setItems((prev) => {
@@ -66,13 +78,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
       return [...prev, { service, quantity: 1 }];
     });
-  }, []);
+  }, [setItems]);
 
   const removeFromCart = useCallback((serviceId: number) => {
     setItems((prev) => prev.filter((item) => item.service.id !== serviceId));
-  }, []);
+  }, [setItems]);
 
-  const clearCart = useCallback(() => setItems([]), []);
+  const clearCart = useCallback(() => setItems(() => []), [setItems]);
 
   const isInCart = useCallback(
     (serviceId: number) => items.some((item) => item.service.id === serviceId),

@@ -12,7 +12,7 @@ This is a Next.js app. Host it on **Vercel**, not GitHub Pages.
 
 | Name | Value |
 |------|--------|
-| `NEXT_PUBLIC_SITE_URL` | `https://glansigbiltvatterikslundab.se` |
+| `NEXT_PUBLIC_SITE_URL` | `https://glansigbilvarderikslundlivli.se` |
 | `NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY` | Optional backup (owner-only) |
 
 ### Booking emails (free forever)
@@ -30,7 +30,7 @@ Optional: keep `NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY` as an owner-only backup.
 ## 2. Connect your domain
 
 1. In the Vercel project → **Settings → Domains**
-2. Add `glansigbiltvatterikslundab.se` and `www.glansigbiltvatterikslundab.se`
+2. Add `glansigbilvarderikslundlivli.se` and `www.glansigbilvarderikslundlivli.se`
 3. At your domain registrar, set DNS as Vercel shows (usually):
 
    - **A** `@` → `76.76.21.21`
@@ -41,5 +41,5 @@ Optional: keep `NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY` as an owner-only backup.
 
 ## 3. After deploy
 
-- Site URL: `https://glansigbiltvatterikslundab.se`
+- Site URL: `https://glansigbilvarderikslundlivli.se`
 - Bookings: activate FormSubmit once via `glansigbilvarderikslund@gmail.com` (see above)

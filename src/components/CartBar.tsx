@@ -7,16 +7,23 @@ import { useCart } from "@/context/CartContext";
 export default function CartBar() {
   const { items, removeFromCart, clearCart, totalCount } = useCart();
   const [showBooking, setShowBooking] = useState(false);
+  const bookingOpen = showBooking && totalCount > 0;
 
   useEffect(() => {
-    if (!showBooking) return;
+    if (!bookingOpen) return;
     document.body.classList.add("cart-booking-open");
     return () => document.body.classList.remove("cart-booking-open");
-  }, [showBooking]);
+  }, [bookingOpen]);
 
-  useEffect(() => {
-    if (totalCount === 0) setShowBooking(false);
-  }, [totalCount]);
+  const handleClearCart = () => {
+    clearCart();
+    setShowBooking(false);
+  };
+
+  const handleRemoveFromCart = (serviceId: number, quantity: number) => {
+    removeFromCart(serviceId);
+    if (totalCount <= quantity) setShowBooking(false);
+  };
 
   if (totalCount === 0) return null;
 
@@ -24,11 +31,11 @@ export default function CartBar() {
 
   return (
     <aside
-      className={`cart-bar ${showBooking ? "cart-bar--booking" : ""}`}
+      className={`cart-bar ${bookingOpen ? "cart-bar--booking" : ""}`}
       aria-label={showBooking ? "Boka tid" : "Valda tjänster"}
     >
-      <div className={`cart-bar-inner ${showBooking ? "cart-bar-inner--booking" : ""}`}>
-        {showBooking ? (
+      <div className={`cart-bar-inner ${bookingOpen ? "cart-bar-inner--booking" : ""}`}>
+        {bookingOpen ? (
           <BookingForm variant="embedded" onClose={closeBooking} />
         ) : (
           <>
@@ -36,7 +43,7 @@ export default function CartBar() {
               <p className="cart-bar-title">
                 Din kundvagn <span className="cart-bar-count">{totalCount}</span>
               </p>
-              <button type="button" className="cart-bar-clear" onClick={clearCart}>
+              <button type="button" className="cart-bar-clear" onClick={handleClearCart}>
                 Töm
               </button>
             </div>
@@ -54,7 +61,7 @@ export default function CartBar() {
                   <button
                     type="button"
                     className="cart-bar-remove"
-                    onClick={() => removeFromCart(service.id)}
+                    onClick={() => handleRemoveFromCart(service.id, quantity)}
                     aria-label={`Ta bort ${service.name}`}
                   >
                     ×

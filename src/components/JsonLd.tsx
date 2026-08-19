@@ -10,7 +10,8 @@ export default function JsonLd({ data }: JsonLdProps) {
       : {
           "@context": "https://schema.org",
           "@graph": graphs.map((entry) => {
-            const { "@context": _context, ...rest } = entry;
+            const rest = { ...entry };
+            delete rest["@context"];
             return rest;
           }),
         };

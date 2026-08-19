@@ -3,7 +3,7 @@ import { SERVICES, SITE } from "@/data/site";
 
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
-  "https://glansigbiltvatterikslundab.se";
+  "https://glansigbilvarderikslundlivli.se";
 
 export const SEO_KEYWORDS = [
   "biltvätt",

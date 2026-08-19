@@ -47,7 +47,7 @@ function servicesLines(payload: BookingEmailPayload) {
   });
 }
 
-function servicesTextBlock(payload: BookingEmailPayload) {
+export function servicesTextBlock(payload: BookingEmailPayload) {
   return servicesLines(payload)
     .map((line) => `  • ${line}`)
     .join("\n");
