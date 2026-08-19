@@ -4,7 +4,7 @@ export default function StatsSection() {
   return (
     <section className="stats">
       <span className="stats-watermark" aria-hidden>
-        5000
+        4000
       </span>
       <div className="stats-content">
         <h2 className="stats-heading">
