@@ -89,7 +89,7 @@ function postViaFormSubmit(values: Record<string, string>): Promise<void> {
 
     const form = document.createElement("form");
     form.method = "POST";
-    form.action = `https://formsubmit.co/${encodeURIComponent(SITE.bookingEmail)}`;
+    form.action = `https://formsubmit.co/${SITE.formSubmitId}`;
     form.target = iframeName;
     form.acceptCharset = "UTF-8";
 

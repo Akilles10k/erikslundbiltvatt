@@ -9,6 +9,8 @@ export const SITE = {
   phones: [{ number: "0709131414", href: "tel:+46709131414" }],
   email: "glansigbilvarderikslund@gmail.com",
   bookingEmail: "glansigbilvarderikslund@gmail.com",
+  /** FormSubmit endpoint id (hides email in form action) */
+  formSubmitId: "a8dbf22e60b22639a6d6ba84797ccad9",
   address: {
     street: "Hallsta Gårdsgata 24",
     postalCode: "721 38",
