@@ -4,6 +4,7 @@ import Image from "next/image";
 import WhySection from "@/components/WhySection";
 import StatsSection from "@/components/StatsSection";
 import HomeSeoSection from "@/components/HomeSeoSection";
+import OfferPopup from "@/components/OfferPopup";
 import JsonLd from "@/components/JsonLd";
 import {
   createPageMetadata,
@@ -88,6 +89,7 @@ export default function HomePage() {
       <WhySection />
       <StatsSection />
       <HomeSeoSection />
+      <OfferPopup />
     </main>
   );
 }
