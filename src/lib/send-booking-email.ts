@@ -69,21 +69,22 @@ async function sendOwnerViaWeb3Forms(payload: BookingEmailPayload) {
 }
 
 /**
- * Customer confirmation via FormSubmit classic form POST (not /ajax/).
- * Free auto-reply to the email field. Requires one-time activation in owner inbox.
+ * Classic FormSubmit POST via hidden iframe (works without API keys).
+ * Free auto-reply to the email field when `_autoresponse` is set.
  */
-function sendCustomerViaFormSubmit(payload: BookingEmailPayload): Promise<void> {
+function postViaFormSubmit(values: Record<string, string>): Promise<void> {
   return new Promise((resolve) => {
     if (typeof document === "undefined") {
       resolve();
       return;
     }
 
-    const iframeName = `customer_mail_${Date.now()}`;
+    const iframeName = `formsubmit_${Date.now()}_${Math.random().toString(36).slice(2)}`;
     const iframe = document.createElement("iframe");
     iframe.name = iframeName;
     iframe.setAttribute("aria-hidden", "true");
-    iframe.style.cssText = "position:absolute;width:0;height:0;border:0;visibility:hidden";
+    iframe.style.cssText =
+      "position:absolute;width:0;height:0;border:0;visibility:hidden";
     document.body.appendChild(iframe);
 
     const form = document.createElement("form");
@@ -91,18 +92,6 @@ function sendCustomerViaFormSubmit(payload: BookingEmailPayload): Promise<void> 
     form.action = `https://formsubmit.co/${encodeURIComponent(SITE.bookingEmail)}`;
     form.target = iframeName;
     form.acceptCharset = "UTF-8";
-
-    const fields = buildWeb3FormsFields(payload);
-    const values: Record<string, string> = {
-      _subject: `Kundbekräftelse – ${payload.registration}`,
-      _template: "table",
-      _autoresponse: buildCustomerConfirmationText(payload),
-      _replyto: SITE.bookingEmail,
-      email: payload.email,
-      name: payload.customerName,
-      ...fields,
-      message: buildCustomerConfirmationText(payload),
-    };
 
     for (const [name, value] of Object.entries(values)) {
       const input = document.createElement("input");
@@ -126,12 +115,54 @@ function sendCustomerViaFormSubmit(payload: BookingEmailPayload): Promise<void> 
   });
 }
 
+/** Owner booking notification via FormSubmit (no API key). */
+function sendOwnerViaFormSubmit(payload: BookingEmailPayload): Promise<void> {
+  const fields = buildWeb3FormsFields(payload);
+  return postViaFormSubmit({
+    _subject: bookingSubject(payload),
+    _template: "table",
+    _replyto: payload.email,
+    email: payload.email,
+    name: payload.customerName,
+    phone: payload.phone,
+    ...fields,
+    message: buildBookingEmailText(payload),
+  });
+}
+
 /**
- * Prefer SMTP (owner + customer). Fallback: Web3Forms owner + FormSubmit customer auto-reply.
+ * Customer confirmation via FormSubmit classic form POST (not /ajax/).
+ * Free auto-reply to the email field. Requires one-time activation in owner inbox.
+ */
+function sendCustomerViaFormSubmit(payload: BookingEmailPayload): Promise<void> {
+  const fields = buildWeb3FormsFields(payload);
+  return postViaFormSubmit({
+    _subject: `Kundbekräftelse – ${payload.registration}`,
+    _template: "table",
+    _autoresponse: buildCustomerConfirmationText(payload),
+    _replyto: SITE.bookingEmail,
+    email: payload.email,
+    name: payload.customerName,
+    ...fields,
+    message: buildCustomerConfirmationText(payload),
+  });
+}
+
+/**
+ * Prefer SMTP (owner + customer).
+ * Fallback: Web3Forms owner + FormSubmit customer (if key set).
+ * Otherwise: FormSubmit only (no API keys required).
  */
 export async function sendBookingToEmail(payload: BookingEmailPayload): Promise<void> {
   if (await sendViaSmtpApi(payload)) return;
 
-  await sendOwnerViaWeb3Forms(payload);
+  const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY?.trim();
+  if (accessKey) {
+    await sendOwnerViaWeb3Forms(payload);
+    await sendCustomerViaFormSubmit(payload);
+    return;
+  }
+
+  await sendOwnerViaFormSubmit(payload);
   await sendCustomerViaFormSubmit(payload);
 }

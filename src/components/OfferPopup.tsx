@@ -12,7 +12,10 @@ import {
   sanitizePhone,
   sanitizeRegistration,
 } from "@/lib/booking-validation";
-import { sendBookingToEmail } from "@/lib/send-booking-email";
+import {
+  sendBookingToEmail,
+  WEB3FORMS_NOT_CONFIGURED,
+} from "@/lib/send-booking-email";
 
 const DISMISS_KEY = "glansig-offer-popup-dismissed";
 const CAR_TYPES = ["Mellan", "SUV"] as const;
@@ -174,11 +177,15 @@ export default function OfferPopup() {
       setSuccess(true);
     } catch (err) {
       const message = err instanceof Error ? err.message : "";
-      setError(
-        message && message.length < 180
-          ? message
-          : "Kunde inte boka tiden. Försök igen eller ring oss.",
-      );
+      if (message === WEB3FORMS_NOT_CONFIGURED) {
+        setError("Kunde inte skicka bokningen. Försök igen eller ring oss.");
+      } else {
+        setError(
+          message && message.length < 180
+            ? message
+            : "Kunde inte boka tiden. Försök igen eller ring oss.",
+        );
+      }
     } finally {
       setSubmitting(false);
     }
