@@ -98,16 +98,22 @@ function isContactPage(pathname: string) {
   return pathname === "/kontakt" || pathname.startsWith("/kontakt/");
 }
 
+function isAdminPage(pathname: string) {
+  return pathname === "/admin" || pathname.startsWith("/admin/");
+}
+
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const pathname = (await headers()).get("x-pathname") ?? "";
+  const admin = isAdminPage(pathname);
   const bodyClass = [
     ibmPlexSans.className,
     isLightPage(pathname) && "page-light",
     isContactPage(pathname) && "page-contact",
+    admin && "page-admin",
   ]
     .filter(Boolean)
     .join(" ");
@@ -117,9 +123,9 @@ export default async function RootLayout({
       <body className={bodyClass}>
         <JsonLd data={GLOBAL_JSON_LD} />
         <CartProvider>
-          <Navbar />
+          {!admin && <Navbar />}
           {children}
-          <Footer />
+          {!admin && <Footer />}
         </CartProvider>
       </body>
     </html>
