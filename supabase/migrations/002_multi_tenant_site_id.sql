@@ -22,6 +22,11 @@ set site_id = 'eskilstuna'
 where site_id is null or btrim(site_id) = '';
 
 -- 3) Constrain + require
+-- Default protects legacy Eskilstuna deploys that insert without site_id
+-- until their Vercel app is updated with BOOKING_SITE_ID=eskilstuna.
+alter table public.bookings
+  alter column site_id set default 'eskilstuna';
+
 alter table public.bookings
   alter column site_id set not null;
 
@@ -33,7 +38,9 @@ alter table public.bookings
   check (site_id in ('eskilstuna', 'erikslund', 'skovde'));
 
 -- 4) Slot uniqueness is PER SITE (cancelled frees the slot).
+-- Drop both historical names used across the three site deploys.
 drop index if exists public.bookings_active_slot_uidx;
+drop index if exists public.bookings_active_slot_unique;
 
 create unique index if not exists bookings_active_slot_per_site_uidx
   on public.bookings (site_id, booking_date, start_time)
