@@ -1,10 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { SITE } from "@/data/site";
 import { type BookingEmailPayload } from "@/lib/booking-message";
+import {
+  availableSlotsForDate,
+  formatIsoDate,
+  getMondayOffset,
+  getMonthDays,
+  startOfTodayLocal,
+  WEEKDAY_LABELS,
+} from "@/lib/booking-hours";
 import {
   isValidCustomerName,
   isValidEmail,
@@ -16,21 +24,12 @@ import {
   sanitizeRegistration,
 } from "@/lib/booking-validation";
 import {
-  sendBookingToEmail,
-  WEB3FORMS_NOT_CONFIGURED,
-} from "@/lib/send-booking-email";
+  submitBooking as persistBooking,
+  SUPABASE_NOT_CONFIGURED,
+} from "@/lib/submit-booking";
 
 const TOTAL_STEPS = 5;
 const CAR_TYPES = ["SUV", "Mellan"] as const;
-
-const TIME_SLOTS = (() => {
-  const slots: string[] = [];
-  for (let hour = 8; hour <= 17; hour++) {
-    slots.push(`${String(hour).padStart(2, "0")}:00`);
-    if (hour < 17) slots.push(`${String(hour).padStart(2, "0")}:30`);
-  }
-  return slots;
-})();
 
 type CarType = (typeof CAR_TYPES)[number];
 
@@ -69,28 +68,6 @@ function formatDayShort(date: Date) {
   }).format(date);
 }
 
-function getMonthDays(year: number, month: number) {
-  const days: Date[] = [];
-  const cursor = new Date(year, month, 1);
-  while (cursor.getMonth() === month) {
-    days.push(new Date(cursor));
-    cursor.setDate(cursor.getDate() + 1);
-  }
-  return days;
-}
-
-const WEEKDAY_LABELS = ["mån", "tis", "ons", "tor", "fre", "lör", "sön"] as const;
-
-function getMondayOffset(date: Date) {
-  return (date.getDay() + 6) % 7;
-}
-
-function startOfToday() {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return today;
-}
-
 function formatRegistrationDisplay(value: string) {
   const compact = sanitizeRegistration(value).replace(/\s/g, "");
   if (compact.length <= 3) return compact;
@@ -110,6 +87,8 @@ export default function BookingForm({ variant = "page", onClose }: BookingFormPr
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [availableTimes, setAvailableTimes] = useState<string[]>([]);
+  const [loadingTimes, setLoadingTimes] = useState(false);
   const [viewMonth, setViewMonth] = useState(() => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), 1);
@@ -133,7 +112,45 @@ export default function BookingForm({ variant = "page", onClose }: BookingFormPr
     );
   }, [viewMonth]);
 
-  const today = useMemo(() => startOfToday(), []);
+  const today = useMemo(() => startOfTodayLocal(), []);
+
+  useEffect(() => {
+    if (!data.date) {
+      setAvailableTimes([]);
+      return;
+    }
+
+    const iso = formatIsoDate(data.date);
+    let cancelled = false;
+    setLoadingTimes(true);
+
+    fetch(`/api/availability?date=${iso}`)
+      .then((res) => res.json())
+      .then((result) => {
+        if (cancelled) return;
+        const slots: string[] =
+          Array.isArray(result.slots) && result.slots.length
+            ? result.slots
+            : availableSlotsForDate(data.date!);
+        setAvailableTimes(slots);
+        setData((prev) =>
+          prev.time && !slots.includes(prev.time)
+            ? { ...prev, time: "" }
+            : prev,
+        );
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setAvailableTimes(availableSlotsForDate(data.date!));
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingTimes(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [data.date]);
 
   const monthLabel = new Intl.DateTimeFormat("sv-SE", {
     month: "long",
@@ -186,7 +203,7 @@ export default function BookingForm({ variant = "page", onClose }: BookingFormPr
       email: sanitizeEmail(data.email),
       phone: sanitizePhone(data.phone),
       carType: data.carType,
-      date: data.date.toISOString(),
+      date: formatIsoDate(data.date),
       time: data.time,
       services: items.map(({ service, quantity }) => ({
         name: service.name,
@@ -197,20 +214,20 @@ export default function BookingForm({ variant = "page", onClose }: BookingFormPr
     };
 
     try {
-      await sendBookingToEmail(payload);
+      await persistBooking({ ...payload, source: "website" });
       clearCart();
       setSubmitted(true);
     } catch (error) {
       const message = error instanceof Error ? error.message : "";
-      if (message === WEB3FORMS_NOT_CONFIGURED) {
+      if (message === SUPABASE_NOT_CONFIGURED) {
         setSubmitError(
-          "Bokningsmejl är inte aktiverat. Saknar NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY.",
+          "Bokningsdatabasen är inte konfigurerad ännu. Kontakta oss per telefon.",
         );
       } else {
         setSubmitError(
           message && message.length < 180
             ? message
-            : "Kunde inte skicka bokningen. Försök igen eller ring oss.",
+            : "Kunde inte spara bokningen. Försök igen eller ring oss.",
         );
       }
     } finally {
@@ -467,18 +484,26 @@ export default function BookingForm({ variant = "page", onClose }: BookingFormPr
           {step === 4 && (
             <>
               <p className="booking-form-section-title">Välj tid</p>
-              <div className="booking-form-times">
-                {TIME_SLOTS.map((slot) => (
-                  <button
-                    key={slot}
-                    type="button"
-                    className={`booking-form-time ${data.time === slot ? "booking-form-time--selected" : ""}`}
-                    onClick={() => update("time", slot)}
-                  >
-                    {slot}
-                  </button>
-                ))}
-              </div>
+              {loadingTimes ? (
+                <p className="booking-form-field-hint">Hämtar lediga tider…</p>
+              ) : availableTimes.length === 0 ? (
+                <p className="booking-form-field-hint">
+                  Inga lediga tider denna dag. Välj ett annat datum.
+                </p>
+              ) : (
+                <div className="booking-form-times">
+                  {availableTimes.map((slot) => (
+                    <button
+                      key={slot}
+                      type="button"
+                      className={`booking-form-time ${data.time === slot ? "booking-form-time--selected" : ""}`}
+                      onClick={() => update("time", slot)}
+                    >
+                      {slot}
+                    </button>
+                  ))}
+                </div>
+              )}
             </>
           )}
 

@@ -3,6 +3,14 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { CAMPAIGN, SITE } from "@/data/site";
 import {
+  availableSlotsForDate,
+  earliestAdvanceDate,
+  formatIsoDate,
+  getMonthDays,
+  startOfTodayLocal,
+  WEEKDAY_LABELS,
+} from "@/lib/booking-hours";
+import {
   isValidCustomerName,
   isValidEmail,
   isValidPhone,
@@ -13,51 +21,17 @@ import {
   sanitizeRegistration,
 } from "@/lib/booking-validation";
 import {
-  sendBookingToEmail,
-  WEB3FORMS_NOT_CONFIGURED,
-} from "@/lib/send-booking-email";
+  submitBooking,
+  SUPABASE_NOT_CONFIGURED,
+} from "@/lib/submit-booking";
 
 const DISMISS_KEY = "glansig-offer-popup-dismissed";
 const CAR_TYPES = ["Mellan", "SUV"] as const;
-const WEEKDAY_LABELS = ["mån", "tis", "ons", "tor", "fre", "lör", "sön"] as const;
-
-const TIME_SLOTS = (() => {
-  const slots: string[] = [];
-  for (let hour = 8; hour <= 17; hour++) {
-    slots.push(`${String(hour).padStart(2, "0")}:00`);
-    if (hour < 17) slots.push(`${String(hour).padStart(2, "0")}:30`);
-  }
-  return slots;
-})();
 
 function formatRegistrationDisplay(value: string) {
   const compact = sanitizeRegistration(value).replace(/\s/g, "");
   if (compact.length <= 3) return compact;
   return `${compact.slice(0, 3)} ${compact.slice(3)}`;
-}
-
-function formatIsoDate(date: Date) {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
-}
-
-function getMonthDays(year: number, month: number) {
-  const days: Date[] = [];
-  const cursor = new Date(year, month, 1);
-  while (cursor.getMonth() === month) {
-    days.push(new Date(cursor));
-    cursor.setDate(cursor.getDate() + 1);
-  }
-  return days;
-}
-
-function slotsForDate(date: Date | null) {
-  if (date?.getDay() === 6) {
-    return TIME_SLOTS.filter((slot) => slot >= "10:00");
-  }
-  return TIME_SLOTS;
 }
 
 export default function OfferPopup() {
@@ -72,22 +46,14 @@ export default function OfferPopup() {
   const [carType, setCarType] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [time, setTime] = useState("");
+  const [availableTimes, setAvailableTimes] = useState<string[]>([]);
   const [viewMonth, setViewMonth] = useState(() => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), 1);
   });
 
-  const today = useMemo(() => {
-    const d = new Date();
-    d.setHours(0, 0, 0, 0);
-    return d;
-  }, []);
-
-  const earliestDate = useMemo(() => {
-    const d = new Date(today);
-    d.setDate(d.getDate() + 1);
-    return d;
-  }, [today]);
+  const today = useMemo(() => startOfTodayLocal(), []);
+  const earliestDate = useMemo(() => earliestAdvanceDate(today), [today]);
 
   const monthDays = useMemo(
     () => getMonthDays(viewMonth.getFullYear(), viewMonth.getMonth()),
@@ -103,7 +69,35 @@ export default function OfferPopup() {
     month: "long",
     year: "numeric",
   }).format(viewMonth);
-  const availableTimes = slotsForDate(selectedDate);
+
+  useEffect(() => {
+    if (!selectedDate) {
+      setAvailableTimes([]);
+      return;
+    }
+    const iso = formatIsoDate(selectedDate);
+    let cancelled = false;
+    fetch(`/api/availability?date=${iso}&advance=1`)
+      .then((res) => res.json())
+      .then((result) => {
+        if (cancelled) return;
+        const slots: string[] =
+          Array.isArray(result.slots) && result.slots.length
+            ? result.slots
+            : availableSlotsForDate(selectedDate, { requireAdvanceDay: true });
+        setAvailableTimes(slots);
+        setTime((prev) => (prev && !slots.includes(prev) ? "" : prev));
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setAvailableTimes(
+          availableSlotsForDate(selectedDate, { requireAdvanceDay: true }),
+        );
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedDate]);
 
   useEffect(() => {
     if (!CAMPAIGN.active) return;
@@ -152,7 +146,7 @@ export default function OfferPopup() {
     setSubmitting(true);
     setError(null);
     try {
-      await sendBookingToEmail({
+      await submitBooking({
         customerName: sanitizeCustomerName(name),
         phone: sanitizePhone(phone),
         email: sanitizeEmail(email),
@@ -168,6 +162,8 @@ export default function OfferPopup() {
           },
         ],
         total: CAMPAIGN.campaignPrice,
+        source: "campaign",
+        requireAdvanceDay: true,
       });
       try {
         sessionStorage.setItem(DISMISS_KEY, "1");
@@ -177,8 +173,10 @@ export default function OfferPopup() {
       setSuccess(true);
     } catch (err) {
       const message = err instanceof Error ? err.message : "";
-      if (message === WEB3FORMS_NOT_CONFIGURED) {
-        setError("Kunde inte skicka bokningen. Försök igen eller ring oss.");
+      if (message === SUPABASE_NOT_CONFIGURED) {
+        setError(
+          "Bokningsdatabasen är inte konfigurerad ännu. Kontakta oss per telefon.",
+        );
       } else {
         setError(
           message && message.length < 180
@@ -443,8 +441,6 @@ export default function OfferPopup() {
                           onClick={() => {
                             if (day < earliestDate || day.getDay() === 0) return;
                             setSelectedDate(day);
-                            const slots = slotsForDate(day);
-                            if (time && !slots.includes(time)) setTime("");
                           }}
                         >
                           <span className="booking-form-calendar-day-num">
