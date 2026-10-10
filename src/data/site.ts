@@ -292,7 +292,7 @@ export type Campaign = {
   ctaLink: string;
 };
 
-/** Redigera kampanjpriser här – visas som popup vid första besök */
+/** Redigera kampanjpriser här – styr om erbjudandepopup visas */
 export const CAMPAIGN: Campaign = {
   active: true,
   title: "50% RABATT",
@@ -306,3 +306,45 @@ export const CAMPAIGN: Campaign = {
   ctaText: "Hämta Erbjudandet",
   ctaLink: "/tjanster?kampanj=helrekond",
 };
+
+export type OfferCampaign = {
+  id: string;
+  image: string;
+  imageAlt: string;
+  bookingName: string;
+  kicker: string;
+  headline: string;
+  description: string;
+  price: string;
+  originalPrice: string;
+};
+
+/** Kampanjer i startsidans erbjudandepopup (välj → boka) */
+export const CAMPAIGNS: OfferCampaign[] = [
+  {
+    id: "helrekond-lackskydd",
+    image: "/kampanjer/helrekond.png",
+    imageAlt:
+      "Lackskydd på helrekond, 2 990 kr, ordinarie 5 990 kr. 5 års garanti. Tidsbegränsat nykundserbjudande.",
+    bookingName: "Lackskydd på helrekond",
+    kicker: "LACKSKYDD",
+    headline: "PÅ HELREKOND",
+    description:
+      "Få ett professionellt lackskydd som bevarar bilens glans, gör den enklare att hålla ren och skyddar mot väder, smuts och UV-strålar.",
+    price: "2 990 kr",
+    originalPrice: "5 990 kr",
+  },
+  {
+    id: "husbil-rekond",
+    image: "/kampanjer/husbil.png",
+    imageAlt:
+      "Utvändig rekond för husbil, 4 990 kr, ordinarie 7 990 kr. Tidsbegränsat nykundserbjudande.",
+    bookingName: "Utvändig rekond för husbil",
+    kicker: "UTVÄNDIG REKOND",
+    headline: "FÖR HUSBIL",
+    description:
+      "Få ett professionellt lackskydd som håller din husbil renare, blankare och skyddad mot väder, smuts och UV-strålar.",
+    price: "4 990 kr",
+    originalPrice: "7 990 kr",
+  },
+];

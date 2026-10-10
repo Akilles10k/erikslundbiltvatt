@@ -3105,6 +3105,11 @@ body.cart-booking-open .services--with-cart {
   animation: offer-popup-in 0.28s ease-out;
 }
 
+.offer-popup-panel--choose {
+  width: min(680px, 100%);
+  padding: 1.25rem 1rem 1.1rem;
+}
+
 @keyframes offer-popup-in {
   0% {
     opacity: 0;
@@ -3134,9 +3139,118 @@ body.cart-booking-open .services--with-cart {
   color: #111;
 }
 
+.offer-popup-choose-title {
+  margin: 0 1.75rem 0.85rem;
+  color: #111;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.offer-popup-campaigns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+  align-items: start;
+}
+
+.offer-popup-campaign {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.offer-popup-campaign-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+
+.offer-popup-book {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 2.7rem;
+  border: 0;
+  border-radius: 6px;
+  background: #e30613;
+  color: #fff;
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.offer-popup-book:hover {
+  background: #c50510;
+}
+
+.offer-popup-back:focus-visible,
+.offer-popup-book:focus-visible {
+  outline: 2px solid #111;
+  outline-offset: 2px;
+}
+
+.offer-popup-back {
+  display: inline-flex;
+  margin: 0 0 0.7rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #555;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.offer-popup-back:hover {
+  color: #111;
+}
+
+.offer-popup-hero .offer-popup-title-accent {
+  font-size: clamp(1.5rem, 4.6vw, 2rem);
+}
+
+.offer-popup-hero .offer-popup-title-main {
+  font-size: clamp(1.35rem, 4.2vw, 1.8rem);
+}
+
 .offer-popup-hero {
   margin: 0 auto 1.15rem;
   max-width: 22rem;
+}
+
+.offer-popup-prices {
+  margin: 0.85rem 0 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.offer-popup-price-old {
+  color: #888;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: line-through;
+}
+
+.offer-popup-price-new {
+  color: #e30613;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.offer-popup-submit-ord {
+  text-decoration: line-through;
 }
 
 .offer-popup-title {
@@ -3356,6 +3470,25 @@ body.cart-booking-open .services--with-cart {
 }
 
 @media (max-width: 480px) {
+  .offer-popup-panel--choose {
+    padding: 1.1rem 0.7rem 0.9rem;
+  }
+
+  .offer-popup-choose-title {
+    margin-bottom: 0.7rem;
+    font-size: 0.98rem;
+  }
+
+  .offer-popup-campaigns {
+    gap: 0.6rem;
+  }
+
+  .offer-popup-book {
+    height: 2.45rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+  }
+
   .offer-popup-panel {
     padding: 1.35rem 0.85rem 1.15rem;
   }

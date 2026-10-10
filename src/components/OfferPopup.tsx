@@ -1,7 +1,8 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
-import { CAMPAIGN, SITE } from "@/data/site";
+import Image from "next/image";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { CAMPAIGN, CAMPAIGNS, SITE, type OfferCampaign } from "@/data/site";
 import {
   availableSlotsForDate,
   earliestAdvanceDate,
@@ -25,8 +26,10 @@ import {
   SUPABASE_NOT_CONFIGURED,
 } from "@/lib/submit-booking";
 
-const DISMISS_KEY = "glansig-offer-popup-dismissed";
+const DISMISS_KEY = "glansig-offer-popup-v2";
 const CAR_TYPES = ["Mellan", "SUV"] as const;
+
+type Step = "choose" | "book";
 
 function formatRegistrationDisplay(value: string) {
   const compact = sanitizeRegistration(value).replace(/\s/g, "");
@@ -36,6 +39,10 @@ function formatRegistrationDisplay(value: string) {
 
 export default function OfferPopup() {
   const [open, setOpen] = useState(false);
+  const [step, setStep] = useState<Step>("choose");
+  const [selectedCampaignId, setSelectedCampaignId] = useState<string | null>(
+    null,
+  );
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -51,6 +58,10 @@ export default function OfferPopup() {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), 1);
   });
+  const backRef = useRef<HTMLButtonElement>(null);
+
+  const selectedCampaign: OfferCampaign | null =
+    CAMPAIGNS.find((c) => c.id === selectedCampaignId) ?? null;
 
   const today = useMemo(() => startOfTodayLocal(), []);
   const earliestDate = useMemo(() => earliestAdvanceDate(today), [today]);
@@ -119,6 +130,12 @@ export default function OfferPopup() {
     };
   }, [open]);
 
+  useEffect(() => {
+    if (step === "book" && selectedCampaign) {
+      backRef.current?.focus();
+    }
+  }, [step, selectedCampaign]);
+
   const dismiss = () => {
     setOpen(false);
     try {
@@ -128,7 +145,19 @@ export default function OfferPopup() {
     }
   };
 
+  const goToChoose = () => {
+    setStep("choose");
+    setError(null);
+  };
+
+  const goToBook = (campaign: OfferCampaign) => {
+    setSelectedCampaignId(campaign.id);
+    setStep("book");
+    setError(null);
+  };
+
   const canSubmit =
+    selectedCampaign !== null &&
     isValidCustomerName(name) &&
     isValidPhone(phone) &&
     isValidEmail(email) &&
@@ -141,7 +170,7 @@ export default function OfferPopup() {
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    if (!canSubmit || !selectedDate) return;
+    if (!canSubmit || !selectedDate || !selectedCampaign) return;
 
     setSubmitting(true);
     setError(null);
@@ -156,12 +185,12 @@ export default function OfferPopup() {
         time,
         services: [
           {
-            name: "Helrekond – 50% kampanj",
+            name: `${selectedCampaign.bookingName} – kampanj`,
             quantity: 1,
-            price: CAMPAIGN.campaignPrice,
+            price: `${selectedCampaign.price} (ord. ${selectedCampaign.originalPrice})`,
           },
         ],
-        total: CAMPAIGN.campaignPrice,
+        total: selectedCampaign.price,
         source: "campaign",
         requireAdvanceDay: true,
       });
@@ -191,6 +220,8 @@ export default function OfferPopup() {
 
   if (!open) return null;
 
+  const chooseMode = step === "choose" && !success;
+
   return (
     <div
       className="offer-popup"
@@ -204,7 +235,9 @@ export default function OfferPopup() {
         aria-label="Stäng"
         onClick={dismiss}
       />
-      <div className="offer-popup-panel">
+      <div
+        className={`offer-popup-panel${chooseMode ? " offer-popup-panel--choose" : ""}`}
+      >
         <button
           type="button"
           className="offer-popup-close"
@@ -214,7 +247,7 @@ export default function OfferPopup() {
           ×
         </button>
 
-        {success && selectedDate ? (
+        {success && selectedDate && selectedCampaign ? (
           <div className="offer-popup-success" role="status">
             <h2 id="offer-popup-title" className="offer-popup-title">
               <span className="offer-popup-title-main">Tiden är bokad</span>
@@ -228,20 +261,40 @@ export default function OfferPopup() {
               kl. {time}. En bekräftelse skickas till {sanitizeEmail(email)}.
             </p>
             <p className="offer-popup-tag">
-              Helrekond · {CAMPAIGN.campaignPrice}
+              {selectedCampaign.bookingName} · {selectedCampaign.price}
             </p>
             <button type="button" className="offer-popup-submit" onClick={dismiss}>
               <span className="offer-popup-submit-main">Stäng</span>
             </button>
           </div>
-        ) : (
+        ) : step === "book" && selectedCampaign ? (
           <>
             <div className="offer-popup-hero">
+              <button
+                ref={backRef}
+                type="button"
+                className="offer-popup-back"
+                onClick={goToChoose}
+              >
+                Tillbaka
+              </button>
               <h2 id="offer-popup-title" className="offer-popup-title">
-                <span className="offer-popup-title-accent">{CAMPAIGN.title}</span>
-                <span className="offer-popup-title-main">{CAMPAIGN.subtitle}</span>
+                <span className="offer-popup-title-accent">
+                  {selectedCampaign.kicker}
+                </span>
+                <span className="offer-popup-title-main">
+                  {selectedCampaign.headline}
+                </span>
               </h2>
-              <p className="offer-popup-desc">{CAMPAIGN.description}</p>
+              <p className="offer-popup-desc">{selectedCampaign.description}</p>
+              <p className="offer-popup-prices">
+                <span className="offer-popup-price-old">
+                  {selectedCampaign.originalPrice}
+                </span>
+                <span className="offer-popup-price-new">
+                  {selectedCampaign.price}
+                </span>
+              </p>
               <p className="offer-popup-tag">Tidsbegränsat nykundserbjudande</p>
             </div>
 
@@ -489,14 +542,47 @@ export default function OfferPopup() {
                 disabled={!canSubmit}
               >
                 <span className="offer-popup-submit-main">
-                  {submitting ? "Bokar…" : CAMPAIGN.ctaText}
+                  {submitting ? "Bokar…" : "Hämta Erbjudandet"}
                 </span>
                 <span className="offer-popup-submit-sub">
-                  Just Nu fr. 1.495:- (Ord. fr. 3.000:-)
+                  Just nu {selectedCampaign.price} (ord.{" "}
+                  <span className="offer-popup-submit-ord">
+                    {selectedCampaign.originalPrice}
+                  </span>
+                  )
                 </span>
               </button>
             </form>
           </>
+        ) : (
+          <div className="offer-popup-choose">
+            <h2 id="offer-popup-title" className="offer-popup-choose-title">
+              Aktuella erbjudanden
+            </h2>
+            <div className="offer-popup-campaigns">
+              {CAMPAIGNS.map((campaign) => (
+                <article key={campaign.id} className="offer-popup-campaign">
+                  <Image
+                    src={campaign.image}
+                    alt={campaign.imageAlt}
+                    width={819}
+                    height={1024}
+                    className="offer-popup-campaign-image"
+                    priority
+                    sizes="(max-width: 700px) 45vw, 320px"
+                  />
+                  <button
+                    type="button"
+                    className="offer-popup-book"
+                    aria-label={`Boka nu, ${campaign.bookingName}`}
+                    onClick={() => goToBook(campaign)}
+                  >
+                    BOKA NU
+                  </button>
+                </article>
+              ))}
+            </div>
+          </div>
         )}
       </div>
     </div>
