@@ -13,9 +13,11 @@ npm run dev
 
 ## Bokning + admin
 
-Live-bokning via Supabase och adminpanel på `/admin` (samma modell som Eskilstuna).
+Live-bokning via Supabase och adminpanel på `/admin`.
 
-Se **[BOOKING_SETUP.md](./BOOKING_SETUP.md)** för SQL-migration, Vercel-env och teststeg.
+Denna sajt delar **ett** Supabase-projekt med Eskilstuna och Skövde men isoleras med `BOOKING_SITE_ID=erikslund` (inga delade bokningar/mejler mellan sajter).
+
+Se **[BOOKING_SETUP.md](./BOOKING_SETUP.md)** för SQL-migrationer (`001` + `002`), Vercel-env och teststeg.
 
 ## Deploy (Vercel)
 

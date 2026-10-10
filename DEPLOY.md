@@ -15,15 +15,16 @@ Full booking/admin setup: see **[BOOKING_SETUP.md](./BOOKING_SETUP.md)**.
 | Name | Value |
 |------|--------|
 | `NEXT_PUBLIC_SITE_URL` | Your public site URL |
-| `SUPABASE_URL` | Supabase project URL |
+| `SUPABASE_URL` | Shared Supabase project URL |
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (server only) |
-| `ADMIN_PASSWORD` | Password for `/admin` |
-| `ADMIN_SESSION_SECRET` | Long random secret (≥ 32 chars) |
+| `BOOKING_SITE_ID` | `erikslund` (hard isolation; do not reuse other sites’ ids) |
+| `ADMIN_PASSWORD` | Password for `/admin` (unique per site) |
+| `ADMIN_SESSION_SECRET` | Long random secret (≥ 32 chars, unique per site) |
 | `SMTP_USER` | `glansigbilvarderikslund@gmail.com` |
 | `SMTP_PASS` | Gmail App Password |
 | `BOOKING_OWNER_EMAIL` | `glansigbilvarderikslund@gmail.com` |
 
-6. Run SQL migration `supabase/migrations/001_bookings.sql` in Supabase SQL Editor  
+6. Run SQL migrations `001_bookings.sql` then `002_multi_tenant_site_id.sql` in Supabase SQL Editor  
 7. Click **Deploy** on Vercel
 
 ### Booking emails

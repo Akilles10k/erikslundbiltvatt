@@ -9,6 +9,7 @@ import {
   startOfTodayLocal,
   type SlotPolicy,
 } from "@/lib/booking-hours";
+import { getBookingSiteId } from "@/lib/site-id";
 import {
   getSupabaseAdmin,
   isSupabaseConfigured,
@@ -41,8 +42,10 @@ function serviceTypeFromServices(services: BookingServiceItem[]) {
 }
 
 function mapRow(row: Record<string, unknown>): BookingRow {
+  const siteId = String(row.site_id ?? getBookingSiteId());
   return {
     id: String(row.id),
+    site_id: siteId as BookingRow["site_id"],
     customer_name: String(row.customer_name ?? ""),
     customer_email: String(row.customer_email ?? ""),
     customer_phone: String(row.customer_phone ?? ""),
@@ -66,9 +69,11 @@ function mapRow(row: Record<string, unknown>): BookingRow {
 
 export async function getBookedTimesForDate(date: string): Promise<string[]> {
   const supabase = getSupabaseAdmin();
+  const siteId = getBookingSiteId();
   const { data, error } = await supabase
     .from("bookings")
     .select("start_time")
+    .eq("site_id", siteId)
     .eq("booking_date", date)
     .neq("status", "cancelled");
 
@@ -118,7 +123,9 @@ export async function createBooking(input: CreateBookingInput): Promise<BookingR
   }
 
   const supabase = getSupabaseAdmin();
+  const siteId = getBookingSiteId();
   const payload = {
+    site_id: siteId,
     customer_name: input.customerName,
     customer_email: input.customerEmail,
     customer_phone: input.customerPhone,
@@ -157,9 +164,11 @@ export async function listBookings(filters: {
   limit?: number;
 }): Promise<BookingRow[]> {
   const supabase = getSupabaseAdmin();
+  const siteId = getBookingSiteId();
   let query = supabase
     .from("bookings")
     .select("*")
+    .eq("site_id", siteId)
     .order("booking_date", { ascending: true })
     .order("start_time", { ascending: true })
     .limit(filters.limit ?? 500);
@@ -185,7 +194,13 @@ export async function listBookings(filters: {
 
 export async function getBookingById(id: string): Promise<BookingRow | null> {
   const supabase = getSupabaseAdmin();
-  const { data, error } = await supabase.from("bookings").select("*").eq("id", id).maybeSingle();
+  const siteId = getBookingSiteId();
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("*")
+    .eq("site_id", siteId)
+    .eq("id", id)
+    .maybeSingle();
   if (error) throw error;
   return data ? mapRow(data as Record<string, unknown>) : null;
 }
@@ -241,16 +256,20 @@ export async function updateBooking(id: string, patch: BookingPatch): Promise<Bo
     patch.start_time = slotCheck.time;
   }
 
+  // Never allow site_id to be changed via patch (hard isolation).
   const updatePayload: Record<string, unknown> = { ...patch };
+  delete updatePayload.site_id;
   if (patch.start_time || patch.booking_date) {
     const time = (patch.start_time as string | undefined) ?? existing.start_time;
     updatePayload.end_time = endTimeForStart(time);
   }
 
   const supabase = getSupabaseAdmin();
+  const siteId = getBookingSiteId();
   const { data, error } = await supabase
     .from("bookings")
     .update(updatePayload)
+    .eq("site_id", siteId)
     .eq("id", id)
     .select("*")
     .single();
@@ -275,9 +294,11 @@ export async function getAdminStats(year: number, month: number) {
   const to = formatIsoDate(monthEnd);
   const today = formatIsoDate(startOfTodayLocal());
 
+  const siteId = getBookingSiteId();
   const { data, error } = await supabase
     .from("bookings")
     .select("booking_date, status, start_time")
+    .eq("site_id", siteId)
     .gte("booking_date", from)
     .lte("booking_date", to)
     .neq("status", "cancelled");
@@ -294,6 +315,7 @@ export async function getAdminStats(year: number, month: number) {
   const { count: upcomingCount, error: upcomingError } = await supabase
     .from("bookings")
     .select("id", { count: "exact", head: true })
+    .eq("site_id", siteId)
     .gte("booking_date", today)
     .neq("status", "cancelled");
 

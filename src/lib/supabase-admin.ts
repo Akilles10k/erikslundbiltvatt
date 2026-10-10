@@ -1,4 +1,5 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import type { BookingSiteId } from "@/lib/site-id";
 
 export type BookingStatus = "pending" | "confirmed" | "completed" | "cancelled";
 
@@ -10,6 +11,7 @@ export type BookingServiceItem = {
 
 export type BookingRow = {
   id: string;
+  site_id: BookingSiteId;
   customer_name: string;
   customer_email: string;
   customer_phone: string;
