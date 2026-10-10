@@ -11,6 +11,12 @@ npm run dev
 
 Öppna [http://localhost:3003](http://localhost:3003)
 
+## Bokning + admin
+
+Live-bokning via Supabase och adminpanel på `/admin` (samma modell som Eskilstuna).
+
+Se **[BOOKING_SETUP.md](./BOOKING_SETUP.md)** för SQL-migration, Vercel-env och teststeg.
+
 ## Deploy (Vercel)
 
 Se **[DEPLOY.md](./DEPLOY.md)** – använd Vercel, inte GitHub Pages.
