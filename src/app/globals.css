@@ -3199,9 +3199,12 @@ body.cart-booking-open .services--with-cart {
 
 .offer-popup-back {
   display: inline-flex;
-  margin: 0 0 0.7rem;
-  padding: 0;
+  align-items: center;
+  margin: 0 0 0.55rem;
+  padding: 0.4rem 0.55rem;
+  min-height: 2rem;
   border: 0;
+  border-radius: 4px;
   background: transparent;
   color: #555;
   font: inherit;
@@ -3225,6 +3228,14 @@ body.cart-booking-open .services--with-cart {
 .offer-popup-hero {
   margin: 0 auto 1.15rem;
   max-width: 22rem;
+  text-align: center;
+}
+
+.offer-popup-hero .offer-popup-back {
+  display: flex;
+  width: fit-content;
+  margin-left: 0;
+  margin-right: auto;
 }
 
 .offer-popup-prices {
