@@ -322,17 +322,17 @@ export type OfferCampaign = {
 /** Kampanjer i startsidans erbjudandepopup (välj → boka) */
 export const CAMPAIGNS: OfferCampaign[] = [
   {
-    id: "helrekond-lackskydd",
+    id: "helrekond-50",
     image: "/kampanjer/helrekond.png",
     imageAlt:
-      "Lackskydd på helrekond, 2 990 kr, ordinarie 5 990 kr. 5 års garanti. Tidsbegränsat nykundserbjudande.",
-    bookingName: "Lackskydd på helrekond",
-    kicker: "LACKSKYDD",
+      "50% off på helrekond, 1 495 kr, ordinarie 3 000 kr. Tidsbegränsat nykundserbjudande.",
+    bookingName: "Helrekond – 50% kampanj",
+    kicker: "50% OFF",
     headline: "PÅ HELREKOND",
     description:
-      "Få ett professionellt lackskydd som bevarar bilens glans, gör den enklare att hålla ren och skyddar mot väder, smuts och UV-strålar.",
-    price: "2 990 kr",
-    originalPrice: "5 990 kr",
+      "Just nu 1 495 kr (ord. pris 3 000 kr). Inklusive en anpassad polering, noggrann vaxning och en detaljerad rekond!",
+    price: "1 495 kr",
+    originalPrice: "3 000 kr",
   },
   {
     id: "husbil-rekond",

@@ -565,8 +565,8 @@ export default function OfferPopup() {
                   <Image
                     src={campaign.image}
                     alt={campaign.imageAlt}
-                    width={819}
-                    height={1024}
+                    width={1080}
+                    height={1350}
                     className="offer-popup-campaign-image"
                     priority
                     sizes="(max-width: 700px) 45vw, 320px"
