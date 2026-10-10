@@ -15,11 +15,10 @@
 alter table public.bookings
   add column if not exists site_id text;
 
--- 2) Backfill existing rows (keeper project default = erikslund).
---    If this Supabase project was Eskilstuna's, run instead:
---      update public.bookings set site_id = 'eskilstuna' where site_id is null;
+-- 2) Backfill existing rows (keeper = Eskilstuna / glansigbiltvatteskilstunaab).
+--    Achilleas chose the Eskilstuna Supabase project as the shared host.
 update public.bookings
-set site_id = 'erikslund'
+set site_id = 'eskilstuna'
 where site_id is null or btrim(site_id) = '';
 
 -- 3) Constrain + require
