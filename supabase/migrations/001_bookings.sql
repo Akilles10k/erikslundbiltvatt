@@ -1,5 +1,6 @@
--- Glansig Bilvård Erikslund – bookings table
+-- Shared bookings table (used by Eskilstuna / Erikslund / Skövde apps).
 -- Run this in Supabase SQL Editor (or via CLI migration).
+-- Then run 002_multi_tenant_site_id.sql for hard per-site isolation.
 
 create extension if not exists "pgcrypto";
 
