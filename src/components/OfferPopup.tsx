@@ -26,7 +26,7 @@ import {
   SUPABASE_NOT_CONFIGURED,
 } from "@/lib/submit-booking";
 
-const DISMISS_KEY = "glansig-offer-popup-v2";
+const DISMISS_KEY = "glansig-offer-popup-v3";
 const CAR_TYPES = ["Mellan", "SUV"] as const;
 
 type Step = "choose" | "book";
@@ -35,6 +35,12 @@ function formatRegistrationDisplay(value: string) {
   const compact = sanitizeRegistration(value).replace(/\s/g, "");
   if (compact.length <= 3) return compact;
   return `${compact.slice(0, 3)} ${compact.slice(3)}`;
+}
+
+function bookingPriceLabel(campaign: OfferCampaign) {
+  return campaign.originalPrice
+    ? `${campaign.price} (ord. ${campaign.originalPrice})`
+    : campaign.price;
 }
 
 export default function OfferPopup() {
@@ -111,7 +117,7 @@ export default function OfferPopup() {
   }, [selectedDate]);
 
   useEffect(() => {
-    if (!CAMPAIGN.active) return;
+    if (!CAMPAIGN.active || CAMPAIGNS.length === 0) return;
     try {
       if (sessionStorage.getItem(DISMISS_KEY) === "1") return;
     } catch {
@@ -131,10 +137,10 @@ export default function OfferPopup() {
   }, [open]);
 
   useEffect(() => {
-    if (step === "book" && selectedCampaign) {
+    if (open && step === "book" && selectedCampaign) {
       backRef.current?.focus();
     }
-  }, [step, selectedCampaign]);
+  }, [open, step, selectedCampaign]);
 
   const dismiss = () => {
     setOpen(false);
@@ -187,7 +193,7 @@ export default function OfferPopup() {
           {
             name: `${selectedCampaign.bookingName} – kampanj`,
             quantity: 1,
-            price: `${selectedCampaign.price} (ord. ${selectedCampaign.originalPrice})`,
+            price: bookingPriceLabel(selectedCampaign),
           },
         ],
         total: selectedCampaign.price,
@@ -288,9 +294,13 @@ export default function OfferPopup() {
               </h2>
               <p className="offer-popup-desc">{selectedCampaign.description}</p>
               <p className="offer-popup-prices">
-                <span className="offer-popup-price-old">
-                  {selectedCampaign.originalPrice}
-                </span>
+                {selectedCampaign.originalPrice ? (
+                  <span className="offer-popup-price-old">
+                    {selectedCampaign.originalPrice}
+                  </span>
+                ) : (
+                  <span className="offer-popup-price-label">Kampanjpris</span>
+                )}
                 <span className="offer-popup-price-new">
                   {selectedCampaign.price}
                 </span>
@@ -545,11 +555,17 @@ export default function OfferPopup() {
                   {submitting ? "Bokar…" : "Hämta Erbjudandet"}
                 </span>
                 <span className="offer-popup-submit-sub">
-                  Just nu {selectedCampaign.price} (ord.{" "}
-                  <span className="offer-popup-submit-ord">
-                    {selectedCampaign.originalPrice}
-                  </span>
-                  )
+                  {selectedCampaign.originalPrice ? (
+                    <>
+                      Just nu {selectedCampaign.price} (ord.{" "}
+                      <span className="offer-popup-submit-ord">
+                        {selectedCampaign.originalPrice}
+                      </span>
+                      )
+                    </>
+                  ) : (
+                    <>Kampanjpris {selectedCampaign.price}</>
+                  )}
                 </span>
               </button>
             </form>
@@ -565,20 +581,65 @@ export default function OfferPopup() {
                   <Image
                     src={campaign.image}
                     alt={campaign.imageAlt}
-                    width={1080}
-                    height={1350}
+                    width={campaign.imageWidth}
+                    height={campaign.imageHeight}
                     className="offer-popup-campaign-image"
+                    style={{
+                      objectPosition: campaign.imagePosition ?? "center center",
+                    }}
                     priority
-                    sizes="(max-width: 700px) 45vw, 320px"
+                    sizes="(max-width: 700px) 92vw, 460px"
                   />
-                  <button
-                    type="button"
-                    className="offer-popup-book"
-                    aria-label={`Boka nu, ${campaign.bookingName}`}
-                    onClick={() => goToBook(campaign)}
-                  >
-                    BOKA NU
-                  </button>
+                  <div className="offer-popup-campaign-body">
+                    <h3 className="offer-popup-campaign-name">
+                      {campaign.bookingName}
+                    </h3>
+                    {campaign.tagline ? (
+                      <p className="offer-popup-campaign-tagline">
+                        {campaign.tagline}
+                      </p>
+                    ) : null}
+                    <p className="offer-popup-campaign-price">
+                      {campaign.originalPrice ? "från " : "Kampanjpris "}
+                      {campaign.price}
+                      {campaign.originalPrice ? (
+                        <span>ord. {campaign.originalPrice}</span>
+                      ) : null}
+                    </p>
+                    <p className="offer-popup-campaign-copy">
+                      {campaign.description}
+                    </p>
+                    {campaign.includes && campaign.includes.length > 0 ? (
+                      <>
+                        <p className="offer-popup-campaign-includes-title">
+                          Allt detta ingår
+                        </p>
+                        <ul className="offer-popup-includes">
+                          {campaign.includes.map((item) => (
+                            <li key={item}>{item}</li>
+                          ))}
+                        </ul>
+                      </>
+                    ) : null}
+                    {campaign.highlight ? (
+                      <p className="offer-popup-campaign-highlight">
+                        {campaign.highlight}
+                      </p>
+                    ) : null}
+                    {campaign.footnote ? (
+                      <p className="offer-popup-campaign-footnote">
+                        {campaign.footnote}
+                      </p>
+                    ) : null}
+                    <button
+                      type="button"
+                      className="offer-popup-book"
+                      aria-label={`Boka nu, ${campaign.bookingName}`}
+                      onClick={() => goToBook(campaign)}
+                    >
+                      BOKA NU
+                    </button>
+                  </div>
                 </article>
               ))}
             </div>

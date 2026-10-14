@@ -311,39 +311,63 @@ export type OfferCampaign = {
   id: string;
   image: string;
   imageAlt: string;
+  imageWidth: number;
+  imageHeight: number;
+  imagePosition?: string;
   bookingName: string;
   kicker: string;
   headline: string;
+  tagline?: string;
   description: string;
+  includes?: string[];
+  highlight?: string;
+  footnote?: string;
   price: string;
-  originalPrice: string;
+  originalPrice?: string;
 };
 
 /** Kampanjer i startsidans erbjudandepopup (välj → boka) */
 export const CAMPAIGNS: OfferCampaign[] = [
   {
-    id: "helrekond-50",
-    image: "/kampanjer/helrekond.png",
+    id: "glansig-special",
+    image: "/kampanjer/glansig-special.png",
     imageAlt:
-      "50% off på helrekond, 1 495 kr, ordinarie 3 000 kr. Tidsbegränsat nykundserbjudande.",
-    bookingName: "Helrekond – 50% kampanj",
-    kicker: "50% OFF",
-    headline: "PÅ HELREKOND",
+      "Glansig Special, komplett bilvård och keramiskt lackskydd. Kampanjpris 9 900 kr. 8 års garanti.",
+    imageWidth: 1290,
+    imageHeight: 1260,
+    imagePosition: "center top",
+    bookingName: "Glansig Special",
+    kicker: "GLANSIG SPECIAL",
+    headline: "9 900 KR",
+    tagline: "Komplett bilvård & keramiskt lackskydd",
     description:
-      "Just nu 1 495 kr (ord. pris 3 000 kr). Inklusive en anpassad polering, noggrann vaxning och en detaljerad rekond!",
-    price: "1 495 kr",
-    originalPrice: "3 000 kr",
+      "Ge din bil en fantastisk förvandling – både invändigt och utvändigt!",
+    includes: [
+      "In- och utvändig biltvätt",
+      "Asfaltsborttagning",
+      "Motortvätt & motorglans",
+      "Sätestvätt och innertaksrengöring",
+      "Professionell bilpolering",
+      "Vaxbehandling",
+    ],
+    highlight: "Keramiskt lackskydd med 8 års garanti",
+    footnote:
+      "En exklusiv behandling som ger bilen fin glans, fräsch interiör och långvarigt lackskydd enligt garantivillkoren. Glansig Bilvård – Erikslund. Skriv ”SPECIAL” till oss på Messenger för att boka. Ge din bil den behandling den förtjänar!",
+    price: "9 900 kr",
   },
   {
     id: "husbil-rekond",
     image: "/kampanjer/husbil.png",
     imageAlt:
       "Utvändig rekond för husbil, 4 990 kr, ordinarie 7 990 kr. Tidsbegränsat nykundserbjudande.",
+    imageWidth: 1122,
+    imageHeight: 1402,
+    imagePosition: "center top",
     bookingName: "Utvändig rekond för husbil",
     kicker: "UTVÄNDIG REKOND",
     headline: "FÖR HUSBIL",
     description:
-      "Få ett professionellt lackskydd som håller din husbil renare, blankare och skyddad mot väder, smuts och UV-strålar.",
+      "Professionellt lackskydd på utvändig rekond som håller husbilen renare, blankare och skyddad mot väder, smuts och UV-strålar.",
     price: "4 990 kr",
     originalPrice: "7 990 kr",
   },
