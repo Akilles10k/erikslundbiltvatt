@@ -3271,6 +3271,48 @@ body.cart-booking-open .services--with-cart {
   color: #444;
 }
 
+.offer-popup-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.35rem 0 0;
+  color: #333;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.offer-popup-rating-text strong {
+  color: #111;
+  font-weight: 800;
+}
+
+.offer-popup-stars {
+  display: inline-flex;
+  gap: 0.08rem;
+}
+
+.offer-popup-star {
+  position: relative;
+  width: 0.95rem;
+  height: 0.95rem;
+  flex: none;
+}
+
+.offer-popup-star svg {
+  display: block;
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.offer-popup-star > span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
 .offer-popup-book {
   display: flex;
   align-items: center;

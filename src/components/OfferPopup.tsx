@@ -28,8 +28,35 @@ import {
 
 const DISMISS_KEY = "glansig-offer-popup-v3";
 const CAR_TYPES = ["Mellan", "SUV"] as const;
+const STAR_PATH =
+  "M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z";
+const STAR_FILLS = [1, 1, 1, 1, 0.9] as const;
 
 type Step = "choose" | "book";
+
+function GoogleRating() {
+  return (
+    <p className="offer-popup-rating">
+      <span className="offer-popup-stars" aria-hidden>
+        {STAR_FILLS.map((fill, index) => (
+          <span key={index} className="offer-popup-star">
+            <svg viewBox="0 0 24 24">
+              <path d={STAR_PATH} fill="#e4e4e4" />
+            </svg>
+            <span style={{ width: `${100 * fill}%` }}>
+              <svg viewBox="0 0 24 24">
+                <path d={STAR_PATH} fill="#fbbc04" />
+              </svg>
+            </span>
+          </span>
+        ))}
+      </span>
+      <span className="offer-popup-rating-text">
+        <strong>4,9</strong> av 5 på Google
+      </span>
+    </p>
+  );
+}
 
 function formatRegistrationDisplay(value: string) {
   const compact = sanitizeRegistration(value).replace(/\s/g, "");
@@ -631,6 +658,7 @@ export default function OfferPopup() {
                         {campaign.footnote}
                       </p>
                     ) : null}
+                    <GoogleRating />
                     <button
                       type="button"
                       className="offer-popup-book"
