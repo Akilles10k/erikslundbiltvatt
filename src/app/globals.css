@@ -3106,8 +3106,9 @@ body.cart-booking-open .services--with-cart {
 }
 
 .offer-popup-panel--choose {
-  width: min(460px, 100%);
-  padding: 1.25rem 1rem 1.1rem;
+  width: min(1120px, 96vw);
+  max-height: min(92dvh, 900px);
+  padding: 1.15rem 1rem 1rem;
 }
 
 @keyframes offer-popup-in {
@@ -3140,7 +3141,7 @@ body.cart-booking-open .services--with-cart {
 }
 
 .offer-popup-choose-title {
-  margin: 0 1.75rem 0.85rem;
+  margin: 0 1.75rem 0.75rem;
   color: #111;
   font-size: 1.05rem;
   font-weight: 800;
@@ -3149,9 +3150,10 @@ body.cart-booking-open .services--with-cart {
 }
 
 .offer-popup-campaigns {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  align-items: stretch;
 }
 
 .offer-popup-campaign {
@@ -3167,24 +3169,28 @@ body.cart-booking-open .services--with-cart {
 
 .offer-popup-campaign-image {
   width: 100%;
-  height: 210px;
+  aspect-ratio: 4 / 5;
+  height: auto;
+  max-height: 240px;
   object-fit: cover;
   object-position: center top;
   display: block;
   border-radius: 0;
+  background: #f3f3f3;
 }
 
 .offer-popup-campaign-body {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  padding: 0.85rem 0.9rem 0.9rem;
+  gap: 0.35rem;
+  padding: 0.7rem 0.7rem 0.75rem;
+  flex: 1;
 }
 
 .offer-popup-campaign-name {
   margin: 0;
   color: #111;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1.2;
@@ -3193,23 +3199,27 @@ body.cart-booking-open .services--with-cart {
 .offer-popup-campaign-tagline {
   margin: 0;
   color: #333;
-  font-size: 0.88rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  line-height: 1.35;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .offer-popup-campaign-price {
-  margin: 0.1rem 0 0;
+  margin: 0.05rem 0 0;
   color: #e30613;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 800;
   line-height: 1.2;
 }
 
 .offer-popup-campaign-price span {
-  margin-left: 0.4rem;
+  margin-left: 0.3rem;
   color: #888;
-  font-size: 0.82rem;
+  font-size: 0.72rem;
   font-weight: 600;
   text-decoration: line-through;
 }
@@ -3221,6 +3231,29 @@ body.cart-booking-open .services--with-cart {
   font-size: 0.86rem;
   font-weight: 500;
   line-height: 1.4;
+}
+
+.offer-popup-campaign-copy--compact {
+  font-size: 0.78rem;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.offer-popup-campaign-body .offer-popup-rating {
+  margin-top: auto;
+  padding-top: 0.25rem;
+  flex-wrap: wrap;
+  font-size: 0.72rem;
+  gap: 0.3rem;
+}
+
+.offer-popup-campaign-body .offer-popup-star,
+.offer-popup-campaign-body .offer-popup-star svg {
+  width: 0.8rem;
+  height: 0.8rem;
 }
 
 .offer-popup-campaign-includes-title {
@@ -3238,6 +3271,25 @@ body.cart-booking-open .services--with-cart {
   list-style: none;
   display: grid;
   gap: 0.28rem;
+}
+
+.offer-popup-includes--book {
+  margin: 0.55rem auto 0;
+  max-width: 22rem;
+  text-align: left;
+}
+
+.offer-popup-hero .offer-popup-campaign-includes-title,
+.offer-popup-hero .offer-popup-campaign-highlight,
+.offer-popup-hero .offer-popup-campaign-footnote {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 22rem;
+  text-align: left;
+}
+
+.offer-popup-hero .offer-popup-campaign-includes-title {
+  margin-top: 0.75rem;
 }
 
 .offer-popup-includes li {
@@ -3318,16 +3370,16 @@ body.cart-booking-open .services--with-cart {
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 2.7rem;
-  margin-top: 0.45rem;
+  height: 2.45rem;
+  margin-top: 0.4rem;
   border: 0;
   border-radius: 6px;
   background: #e30613;
   color: #fff;
   font: inherit;
-  font-size: 0.92rem;
+  font-size: 0.82rem;
   font-weight: 800;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   cursor: pointer;
   transition: background 0.15s ease;
 }
@@ -3631,27 +3683,50 @@ body.cart-booking-open .services--with-cart {
   margin-top: 1.25rem;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 1100px) {
   .offer-popup-panel--choose {
-    padding: 1.1rem 0.7rem 0.9rem;
+    width: min(720px, 96vw);
+  }
+
+  .offer-popup-campaigns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .offer-popup-panel--choose {
+    width: min(100%, 96vw);
+    padding: 1.05rem 0.65rem 0.85rem;
   }
 
   .offer-popup-choose-title {
-    margin-bottom: 0.7rem;
+    margin-bottom: 0.65rem;
     font-size: 0.98rem;
   }
 
   .offer-popup-campaigns {
-    gap: 0.75rem;
+    display: flex;
+    flex-direction: row;
+    gap: 0.65rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 0.25rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .offer-popup-campaign {
+    flex: 0 0 min(78vw, 280px);
+    scroll-snap-align: start;
   }
 
   .offer-popup-campaign-image {
-    height: 190px;
+    max-height: 210px;
   }
 
   .offer-popup-book {
-    height: 2.45rem;
-    font-size: 0.8rem;
+    height: 2.35rem;
+    font-size: 0.78rem;
     letter-spacing: 0.04em;
   }
 

@@ -26,7 +26,7 @@ import {
   SUPABASE_NOT_CONFIGURED,
 } from "@/lib/submit-booking";
 
-const DISMISS_KEY = "glansig-offer-popup-v4";
+const DISMISS_KEY = "glansig-offer-popup-v5";
 const CAR_TYPES = ["Mellan", "SUV"] as const;
 const STAR_PATH =
   "M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z";
@@ -332,6 +332,28 @@ export default function OfferPopup() {
                   {selectedCampaign.price}
                 </span>
               </p>
+              {selectedCampaign.includes && selectedCampaign.includes.length > 0 ? (
+                <>
+                  <p className="offer-popup-campaign-includes-title">
+                    Allt detta ingår
+                  </p>
+                  <ul className="offer-popup-includes offer-popup-includes--book">
+                    {selectedCampaign.includes.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </>
+              ) : null}
+              {selectedCampaign.highlight ? (
+                <p className="offer-popup-campaign-highlight">
+                  {selectedCampaign.highlight}
+                </p>
+              ) : null}
+              {selectedCampaign.footnote ? (
+                <p className="offer-popup-campaign-footnote">
+                  {selectedCampaign.footnote}
+                </p>
+              ) : null}
               <p className="offer-popup-tag">Tidsbegränsat nykundserbjudande</p>
             </div>
 
@@ -615,7 +637,7 @@ export default function OfferPopup() {
                       objectPosition: campaign.imagePosition ?? "center center",
                     }}
                     priority
-                    sizes="(max-width: 700px) 92vw, 460px"
+                    sizes="(max-width: 640px) 78vw, (max-width: 1100px) 45vw, 260px"
                   />
                   <div className="offer-popup-campaign-body">
                     <h3 className="offer-popup-campaign-name">
@@ -633,31 +655,9 @@ export default function OfferPopup() {
                         <span>ord. {campaign.originalPrice}</span>
                       ) : null}
                     </p>
-                    <p className="offer-popup-campaign-copy">
+                    <p className="offer-popup-campaign-copy offer-popup-campaign-copy--compact">
                       {campaign.description}
                     </p>
-                    {campaign.includes && campaign.includes.length > 0 ? (
-                      <>
-                        <p className="offer-popup-campaign-includes-title">
-                          Allt detta ingår
-                        </p>
-                        <ul className="offer-popup-includes">
-                          {campaign.includes.map((item) => (
-                            <li key={item}>{item}</li>
-                          ))}
-                        </ul>
-                      </>
-                    ) : null}
-                    {campaign.highlight ? (
-                      <p className="offer-popup-campaign-highlight">
-                        {campaign.highlight}
-                      </p>
-                    ) : null}
-                    {campaign.footnote ? (
-                      <p className="offer-popup-campaign-footnote">
-                        {campaign.footnote}
-                      </p>
-                    ) : null}
                     <GoogleRating />
                     <button
                       type="button"
