@@ -371,4 +371,55 @@ export const CAMPAIGNS: OfferCampaign[] = [
     price: "4 990 kr",
     originalPrice: "7 990 kr",
   },
+  {
+    id: "komplett-bilvard",
+    image: "/kampanjer/komplett-bilvard.png",
+    imageAlt:
+      "Komplett bilvård, kampanjpris 1 290 kr. Utvändig tvätt, invändig rengöring, asfaltsborttagning, vaxning och däckbyte.",
+    imageWidth: 1145,
+    imageHeight: 1374,
+    imagePosition: "center top",
+    bookingName: "Komplett bilvård",
+    kicker: "KOMPLETT BILVÅRD",
+    headline: "1 290 KR",
+    tagline: "Supererbjudande – allt i ett paket",
+    description:
+      "Ge din bil ny glans till ett fantastiskt pris! Ett komplett bilvårdspaket som gör din bil ren, fräsch och redo för vägarna.",
+    includes: [
+      "Utvändig biltvätt – Noggrann rengöring av bilens utsida",
+      "Invändig rengöring – Dammsugning och rengöring av kupé, instrumentpanel och mattor",
+      "Asfaltsborttagning – Vi tar bort envisa asfaltfläckar från lacken",
+      "Vaxning – Ger bilen en fantastisk glans och hjälper till att skydda lacken",
+      "Däckbyte – Byte mellan sommar- och vinterhjul",
+    ],
+    highlight: "Allt detta för endast 1 290 kr!",
+    footnote:
+      "OBS! Sätestvätt och klädseltvätt ingår inte i erbjudandet. Endast vanlig invändig rengöring. Ren bil, glänsande lack och rätt däck – allt i ett paket. Kontakta oss redan idag för att boka din tid!",
+    price: "1 290 kr",
+  },
+  {
+    id: "husbil-ny-glans",
+    image: "/kampanjer/husbil-ny-glans.png",
+    imageAlt:
+      "Ge din husbil ny glans. Professionell tvätt, asfaltsborttagning och vaxning. 2 495 kr, ordinarie 4 990 kr.",
+    imageWidth: 1145,
+    imageHeight: 1374,
+    imagePosition: "center top",
+    bookingName: "Ge din husbil ny glans",
+    kicker: "GE DIN HUSBIL",
+    headline: "NY GLANS!",
+    tagline: "Professionell tvätt, asfaltsborttagning och vaxning",
+    description:
+      "Ge din husbil eller husvagn den omsorg den förtjänar!",
+    includes: [
+      "Utvändig tvätt – Grundlig rengöring",
+      "Asfaltsborttagning – Tar bort envisa asfaltfläckar",
+      "Vaxning – Ger en glänsande finish och skyddar lacken",
+    ],
+    highlight: "Renare, blankare och redo för nästa äventyr!",
+    footnote:
+      "Halva priset! Kontakta oss för bokning. Din husbil förtjänar det bästa!",
+    price: "2 495 kr",
+    originalPrice: "4 990 kr",
+  },
 ];
