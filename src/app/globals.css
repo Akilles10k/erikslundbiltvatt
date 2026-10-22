@@ -3169,10 +3169,9 @@ body.cart-booking-open .services--with-cart {
 
 .offer-popup-campaign-image {
   width: 100%;
-  aspect-ratio: 4 / 5;
   height: auto;
-  max-height: 240px;
-  object-fit: cover;
+  max-height: 260px;
+  object-fit: contain;
   object-position: center top;
   display: block;
   border-radius: 0;
@@ -3721,7 +3720,7 @@ body.cart-booking-open .services--with-cart {
   }
 
   .offer-popup-campaign-image {
-    max-height: 210px;
+    max-height: 220px;
   }
 
   .offer-popup-book {
