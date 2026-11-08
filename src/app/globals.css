@@ -3106,7 +3106,7 @@ body.cart-booking-open .services--with-cart {
 }
 
 .offer-popup-panel--choose {
-  width: min(1120px, 96vw);
+  width: min(960px, 96vw);
   max-height: min(92dvh, 900px);
   padding: 1.15rem 1rem 1rem;
 }
@@ -3151,7 +3151,7 @@ body.cart-booking-open .services--with-cart {
 
 .offer-popup-campaigns {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.75rem;
   align-items: stretch;
 }
