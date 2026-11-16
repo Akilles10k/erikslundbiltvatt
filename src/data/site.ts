@@ -329,33 +329,6 @@ export type OfferCampaign = {
 /** Kampanjer i startsidans erbjudandepopup (välj → boka) */
 export const CAMPAIGNS: OfferCampaign[] = [
   {
-    id: "glansig-special",
-    image: "/kampanjer/glansig-special.png",
-    imageAlt:
-      "Glansig Special, komplett bilvård och keramiskt lackskydd. Kampanjpris 9 900 kr. 8 års garanti.",
-    imageWidth: 1290,
-    imageHeight: 1260,
-    imagePosition: "center top",
-    bookingName: "Glansig Special",
-    kicker: "GLANSIG SPECIAL",
-    headline: "9 900 KR",
-    tagline: "Komplett bilvård & keramiskt lackskydd",
-    description:
-      "Ge din bil en fantastisk förvandling – både invändigt och utvändigt!",
-    includes: [
-      "In- och utvändig biltvätt",
-      "Asfaltsborttagning",
-      "Motortvätt & motorglans",
-      "Sätestvätt och innertaksrengöring",
-      "Professionell bilpolering",
-      "Vaxbehandling",
-    ],
-    highlight: "Keramiskt lackskydd med 8 års garanti",
-    footnote:
-      "En exklusiv behandling som ger bilen fin glans, fräsch interiör och långvarigt lackskydd enligt garantivillkoren. Glansig Bilvård – Erikslund. Skriv ”SPECIAL” till oss på Messenger för att boka. Ge din bil den behandling den förtjänar!",
-    price: "9 900 kr",
-  },
-  {
     id: "komplett-bilvard",
     image: "/kampanjer/komplett-bilvard.png",
     imageAlt:
@@ -382,29 +355,58 @@ export const CAMPAIGNS: OfferCampaign[] = [
     price: "1 290 kr",
   },
   {
-    id: "lackskydd-helrekond",
-    image: "/kampanjer/lackskydd.jpg",
+    id: "vinter-keramiskt",
+    image: "/kampanjer/vinter-keramiskt.png",
     imageAlt:
-      "Lackskydd på helrekond, 2 499 kr, ordinarie 4 999 kr. 50% rabatt. 36 månaders garanti.",
-    imageWidth: 864,
-    imageHeight: 1152,
+      "Vinterkampanj keramiskt lackskydd. 2 900 kr, ordinarie 5 900 kr. 3 års garanti.",
+    imageWidth: 1024,
+    imageHeight: 1024,
     imagePosition: "center top",
-    bookingName: "Lackskydd på helrekond",
-    kicker: "LACKSKYDD",
-    headline: "PÅ HELREKOND",
-    tagline: "50% rabatt – tidsbegränsat nykundserbjudande",
+    bookingName: "Keramiskt lackskydd – vinterkampanj",
+    kicker: "KERAMISKT LACKSKYDD",
+    headline: "2 900 KR",
+    tagline: "Vintererbjudande – spara 3 000 kr",
     description:
-      "Få ett professionellt lackskydd som bevarar bilens glans, gör den enklare att hålla ren och skyddar mot väder, smuts och UV-strålar.",
+      "Skydda din bil inför vintern! Vägsalt, smuts och slask utsätter lacken för stora påfrestningar. Med vårt keramiska lackskydd får din bil en fantastisk glans och en skyddande, vattenavvisande yta.",
     includes: [
-      "Skyddar lacken",
-      "Avvisar smuts & vatten",
-      "Ger djupare glans",
-      "Längre hållbarhet",
+      "Hjälper till att minska hur mycket salt och smuts som fastnar på lacken",
+      "Gör bilen betydligt enklare att tvätta",
+      "Vatten- och smutsavvisande effekt",
+      "Ger lacken en djup och exklusiv glans",
+      "Underlättar bilens skötsel under vintern",
+      "3 års garanti enligt våra garantivillkor",
     ],
-    highlight: "36 månaders garanti",
+    highlight: "3 års garanti",
     footnote:
-      "Just nu 2 499 kr (ord. 4 999 kr). 50% rabatt på lackskydd vid helrekond. Tidsbegränsat nykundserbjudande.",
-    price: "2 499 kr",
-    originalPrice: "4 999 kr",
+      "Vintern är tuff mot din bil – ge lacken det skydd den förtjänar! Begränsat erbjudande – endast under vinterkampanjen. Boka din tid redan idag!",
+    price: "2 900 kr",
+    originalPrice: "5 900 kr",
+  },
+  {
+    id: "invandig-rekond",
+    image: "/kampanjer/invandig-rekond.png",
+    imageAlt:
+      "Heltäckande invändig rekond. Kampanjpris 1 990 kr. Sätestvätt och komplett invändig rengöring.",
+    imageWidth: 1024,
+    imageHeight: 1024,
+    imagePosition: "center top",
+    bookingName: "Invändig rekond",
+    kicker: "INVÄNDIG REKOND",
+    headline: "1 990 KR",
+    tagline: "Sätestvätt + komplett invändig rengöring",
+    description:
+      "Är bilsätena smutsiga eller fläckiga? Låt oss ge bilen en ren, fräsch och välvårdad känsla igen!",
+    includes: [
+      "Professionell sätestvätt",
+      "Djuprengöring av hela bilens interiör",
+      "Rengöring av mattor och golv",
+      "Rengöring av instrumentpanel och mittkonsol",
+      "Noggrann dammsugning",
+      "Behandling av smuts och fläckar",
+    ],
+    highlight: "Allt detta för endast 1 990 kr!",
+    footnote:
+      "Noggrant och professionellt utfört arbete. Ren bil – fräsch känsla – bättre körupplevelse! Boka din tid redan idag.",
+    price: "1 990 kr",
   },
 ];
